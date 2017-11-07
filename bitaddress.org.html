@@ -8411,7 +8411,7 @@ ninja.foreachSerialized = function (collection, whatToDo, onComplete) {
 			"en": {
 				// javascript alerts or messages
 				"testneteditionactivated": "TESTNET EDITION ACTIVATED",
-				"paperlabelbitcoinaddress": "Bitcoin Address:",
+				"paperlabelbitcoinaddress": "Ethereum Address:",
 				"paperlabelprivatekey": "Private Key:",
 				"paperlabelencryptedkey": "Encrypted Private Key (Password required)",
 				"bulkgeneratingaddresses": "Generating addresses... ",
@@ -10516,14 +10516,17 @@ ninja.wallets.paperwallet = {
 		}
 		else {
 			var key = new Bitcoin.ECKey(false);
-			key.setCompressed(true);
-			var bitcoinAddress = key.getBitcoinAddress();
-			var privateKeyWif = key.getBitcoinWalletImportFormat();
+			var ethPrivKeyHex = key.getBitcoinHexFormat();
+			var ethPubKeyHex = key.getPubKeyHex().substring(2);
+			var ethKeccak256Hex = keccak256(Crypto.util.hexToBytes(ethPubKeyHex));
+			var ethAddress =  '0x' + ethKeccak256Hex.substr(ethKeccak256Hex.length - 40);
+			//var bitcoinAddress = key.getBitcoinAddress();
+			//var privateKeyWif = key.getBitcoinHexFormat();
 			if (ninja.wallets.paperwallet.useArtisticWallet) {
-				ninja.wallets.paperwallet.showArtisticWallet(idPostFix, bitcoinAddress, privateKeyWif);
+				ninja.wallets.paperwallet.showArtisticWallet(idPostFix, ethAddress, ethPrivKeyHex);
 			}
 			else {
-				ninja.wallets.paperwallet.showWallet(idPostFix, bitcoinAddress, privateKeyWif);
+				ninja.wallets.paperwallet.showWallet(idPostFix, ethAddress, ethPrivKeyHex);
 			}
 		}
 	},
